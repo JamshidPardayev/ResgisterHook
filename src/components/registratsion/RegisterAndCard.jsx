@@ -91,10 +91,12 @@ const RegisterAndCard = () => {
     setEdit(null);
   };
   const handleDelete = (id) => {
-    if (confirm("Are You Sure?")) {
+    if (confirm("Are you sure?")) {
       setData(data.filter((user) => user.id !== id));
+      toast.success("Card o'chirildi");
+    } else {
+      toast.error("Card o'chirilmadi");
     }
-    return toast.success("Card O'chirildi");
   };
 
   const handleEdit = (user) => {
