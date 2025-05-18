@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { FaTelegramPlane, FaTwitter, FaInstagramSquare } from "react-icons/fa";
 
 const RegisterAndCard = () => {
@@ -12,15 +13,22 @@ const RegisterAndCard = () => {
   const phoneRef = useRef(null);
   const cPasswordRef = useRef(null);
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(() => {
+    try {
+      const localData = localStorage.getItem("data");
+      return localData ? JSON.parse(localData) : [];
+    } catch (error) {
+      console.error("localStorage JSON parsing error:", error);
+      return [];
+    }
+  });
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("data", JSON.stringify(data))
-  }, [data]);
-  
-  // const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
+  const [edit, setEdit] = useState(null);
 
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(data));
+  }, [data]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,8 +37,16 @@ const RegisterAndCard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const password = form.password;
+    const confirmPassword = cPasswordRef.current.value;
+
+    if (password !== confirmPassword) {
+      return toast.error("Password Bir xil emas!");
+    }
+
     let newUser = {
-      id: new Date().getTime(),
+      id: edit || new Date().getTime(),
       name: form.name,
       surname: surnameRef.current.value,
       email: form.email,
@@ -39,9 +55,12 @@ const RegisterAndCard = () => {
       cPassword: cPasswordRef.current.value,
       gender: form.gender,
     };
-    console.log("New User", newUser);
-    setData([...data, newUser]);
-
+    if (edit) {
+      setData(data.map((item) => (item.id === edit ? newUser : item)));
+      setEdit(null);
+    } else {
+      setData([...data, newUser]);
+    }
     setForm({
       name: "",
       email: "",
@@ -51,10 +70,37 @@ const RegisterAndCard = () => {
     surnameRef.current.value = "";
     phoneRef.current.value = "";
     cPasswordRef.current.value = "";
+    return toast.success("Card Qo'shildi!")
   };
 
   const closeOpen = () => {
     setIsOpen(!isOpen);
+    setForm({ name: "", email: "", password: "", gender: "" });
+    surnameRef.current.value = "";
+    phoneRef.current.value = "";
+    cPasswordRef.current.value = "";
+    setEdit(null);
+  };
+  const handleDelete = (id) => {
+    if(confirm("Are You Sure?")){
+      setData(data.filter((user) => user.id !== id));
+    }
+    return toast.success("Card O'chirildi")
+  };
+
+  const handleEdit = (user) => {
+    setForm({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      gender: user.gender,
+    });
+    (surnameRef.current.value = user.surname),
+      (phoneRef.current.value = user.phone),
+      (cPasswordRef.current.value = user.cPassword),
+      setEdit(user.id);
+    setIsOpen(true);
+    return toast.success("Ma'lumot Yangilandi!")
   };
 
   return (
@@ -181,32 +227,76 @@ const RegisterAndCard = () => {
           </div>
           <br className="max-sm:hidden" />
           <button className="w-[250px] h-[40px] rounded-[15px]  bg-blue-600 text-white cursor-pointer hover:bg-blue-800 duration-300 max-sm:w-[100%]">
-            Register
+            {edit ? "Update" : "Register"}
           </button>
         </form>
       </div>
-      <div className='max-w-[1200px] mx-auto p-4'>
-      
-      <h1 className="mx-auto relative text-[30px] w-[100px] text-black font-semibold tracking-[1px] text-center mt-2 hover:text-gray-700  cursor-pointer duration-300 mb-3 before:absolute before:left-0 before:bottom-0 before:w-[100%] before:h-[3px] before:scale-0 before:bg-gray-700 hover:before:scale-100 before:duration-300">
+
+      {/* ================= CARD ================= */}
+      {/* ================= CARD ================= */}
+      <div className="max-w-[1200px] mx-auto p-4">
+        <h1 className="mx-auto relative text-[30px] w-[100px] text-black font-semibold tracking-[1px] text-center mt-2 hover:text-gray-700  cursor-pointer duration-300 mb-3 before:absolute before:left-0 before:bottom-0 before:w-[100%] before:h-[3px] before:scale-0 before:bg-gray-700 hover:before:scale-100 before:duration-300">
           Cards
         </h1>
-      <div className='w-[320px] shadow-[1px_1px_8px_#333333] bg-gray-100 p-4 flex justify-center flex-col items-center gap-2 rounded-2xl'>
-        <div className='w-[300px] h-[280px] rounded-2xl overflow-hidden'>
-        <img src="./men.jpg" alt="menImg" className='rounded-2xl hover:scale-110 w-full h-full duration-500 cursor-pointer'/>
-        </div>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Name:</span> Jamshid</p>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Surname:</span> Jamshid</p>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Email: </span>Jamshid@gamil.com</p>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Number:</span> Jamshid</p>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Password:</span> Jamshid</p>
-        <p className='text-[15px] font-medium text-gray-700 text-center'><span className='text-black text-[18px] font-semibold'>Gender:</span> Jamshid</p>
-        <div className='flex text-[24px] gap-x-6'>
-        <FaTelegramPlane className='text-blue-700 cursor-pointer hover:scale-105 duration-300'/>
-        <FaInstagramSquare className='text-pink-500 cursor-pointer hover:scale-105 duration-300'/>
-        <FaTwitter className='text-blue-500 cursor-pointer hover:scale-105 duration-300'/>
+        <div className="flex gap-6 flex-wrap justify-center">
+          {data?.map((user) => (
+            <div key={user.id} className="w-[320px] shadow-[1px_1px_8px_#333333] bg-gray-100 p-4 flex justify-center flex-col items-center gap-2 rounded-2xl">
+              <div className="w-[300px] h-[280px] rounded-2xl overflow-hidden">
+                <img
+                  src={user.gender === "male" ? "./men.jpg" : "./women.jpg"}
+                  alt="userImg"
+                  className="rounded-2xl hover:scale-110 w-full h-full duration-500 cursor-pointer"
+                />
+              </div>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Name:
+                </span>
+                {user.name}
+              </p>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Surname:
+                </span>
+                {user.surname}
+              </p>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Email:
+                </span>
+                {user.email}
+              </p>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Number:
+                </span>
+                {user.phone}
+              </p>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Password:
+                </span>
+                {user.password}
+              </p>
+              <p className="text-[15px] font-medium text-gray-700 text-center">
+                <span className="text-black text-[18px] font-semibold">
+                  Gender:
+                </span>
+                {user.gender}
+              </p>
+              <div className="flex text-[24px] gap-x-6">
+                <FaTelegramPlane className="text-blue-700 cursor-pointer hover:scale-105 duration-300" />
+                <FaInstagramSquare className="text-pink-500 cursor-pointer hover:scale-105 duration-300" />
+                <FaTwitter className="text-blue-500 cursor-pointer hover:scale-105 duration-300" />
+              </div>
+              <div className="flex  items-center gap-3 mt-2">
+                <button onClick={() => handleEdit(user)} className="w-[120px] h-[35px] bg-green-600 hover:bg-green-800 cursor-pointer text-white font-medium rounded-[5px] duration-300">Update</button>
+                <button onClick={() => handleDelete(user.id)} className="w-[120px] h-[35px] bg-red-600 hover:bg-red-800 cursor-pointer text-white font-medium rounded-[5px] duration-300">Delete</button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
     </div>
   );
 };
