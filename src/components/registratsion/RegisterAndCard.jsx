@@ -12,6 +12,7 @@ const RegisterAndCard = () => {
   const surnameRef = useRef(null);
   const phoneRef = useRef(null);
   const cPasswordRef = useRef(null);
+  const formRef = useRef(null);
 
   const [data, setData] = useState(() => {
     try {
@@ -111,6 +112,10 @@ const RegisterAndCard = () => {
       (cPasswordRef.current.value = user.cPassword),
       setEdit(user.id);
     setIsOpen(true);
+
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 200);
   };
 
   return (
@@ -130,116 +135,125 @@ const RegisterAndCard = () => {
         }`}
       >
         <h1 className="mx-auto relative text-[30px] w-[200px] text-black font-semibold tracking-[1px] text-center mt-2 hover:text-gray-700  cursor-pointer duration-300 before:absolute before:left-0 before:bottom-0 before:w-[100%] before:h-[3px] before:scale-0 before:bg-gray-700 hover:before:scale-100 before:duration-300">
-        {edit !== null ? "Edit User" : "Register User"}
+          {edit !== null ? "Edit User" : "Register User"}
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          action=""
-          className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 mt-4"
+        <div
+          ref={formRef}
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            isOpen
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-5"
+          }`}
         >
-          <div className="flex flex-col gap-1">
-            <label htmlFor="name">Full Name</label>
-            <input
-              required
-              type="text"
-              id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="surname">Surname</label>
-            <input
-              required
-              type="text"
-              id="surname"
-              name="surname"
-              ref={surnameRef}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="email">Email</label>
-            <input
-              required
-              type="email"
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">Phone Number</label>
-            <input
-              required
-              type="text"
-              name="phone"
-              ref={phoneRef}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="password">Password</label>
-            <input
-              required
-              type="password"
-              id="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="cPassword">Confirm Password</label>
-            <input
-              required
-              type="password"
-              id="cPassword"
-              name="cPassword"
-              ref={cPasswordRef}
-              className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
-            />
-          </div>
-          <div>
-            <h2 className="text-[20px] font-medium mb-2">Gender</h2>
-            <div className="flex justify-between gap-x-2 max-w-[250px]">
-              <div className="flex  gap-x-1">
-                <input
-                  required
-                  type="radio"
-                  name="gender"
-                  id="male"
-                  value="male"
-                  checked={form.gender === "male"}
-                  onChange={handleChange}
-                />
-                <label htmlFor="male">Male</label>
-              </div>
-              <div className="flex  gap-x-1">
-                <input
-                  required
-                  type="radio"
-                  name="gender"
-                  id="female"
-                  value="female"
-                  checked={form.gender === "female"}
-                  onChange={handleChange}
-                />
-                <label htmlFor="female">Female</label>
+          <form
+            onSubmit={handleSubmit}
+            action=""
+            className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 mt-4"
+          >
+            <div className="flex flex-col gap-1">
+              <label htmlFor="name">Full Name</label>
+              <input
+                required
+                type="text"
+                id="name"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="surname">Surname</label>
+              <input
+                required
+                type="text"
+                id="surname"
+                name="surname"
+                ref={surnameRef}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="email">Email</label>
+              <input
+                required
+                type="email"
+                id="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="">Phone Number</label>
+              <input
+                required
+                type="text"
+                name="phone"
+                ref={phoneRef}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="password">Password</label>
+              <input
+                required
+                type="password"
+                id="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="cPassword">Confirm Password</label>
+              <input
+                required
+                type="password"
+                id="cPassword"
+                name="cPassword"
+                ref={cPasswordRef}
+                className="border-gray-400 border shadow-[1px_1px_5px_#333333] outline-none h-[45px] rounded-[10px] px-3"
+              />
+            </div>
+            <div>
+              <h2 className="text-[20px] font-medium mb-2">Gender</h2>
+              <div className="flex justify-between gap-x-2 max-w-[250px]">
+                <div className="flex  gap-x-1">
+                  <input
+                    required
+                    type="radio"
+                    name="gender"
+                    id="male"
+                    value="male"
+                    checked={form.gender === "male"}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="male">Male</label>
+                </div>
+                <div className="flex  gap-x-1">
+                  <input
+                    required
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    value="female"
+                    checked={form.gender === "female"}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="female">Female</label>
+                </div>
               </div>
             </div>
-          </div>
-          <br className="max-sm:hidden" />
-          <button className="w-[250px] h-[40px] rounded-[15px]  bg-blue-600 text-white cursor-pointer hover:bg-blue-800 duration-300 max-sm:w-[100%]">
-            {edit ? "Update" : "Register"}
-          </button>
-        </form>
+            <br className="max-sm:hidden" />
+            <button className="w-[250px] h-[40px] rounded-[15px]  bg-blue-600 text-white cursor-pointer hover:bg-blue-800 duration-300 max-sm:w-[100%]">
+              {edit ? "Update" : "Register"}
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* ================= CARD ================= */}
