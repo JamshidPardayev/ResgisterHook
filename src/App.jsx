@@ -1,10 +1,10 @@
 import React from 'react'
-import Register from './components/registratsion/Register'
+import RegisterAndCard from './components/registratsion/RegisterAndCard'
 
 const App = () => {
   return (
     <div>
-      <Register />
+      <RegisterAndCard />
     </div>
   )
 }
