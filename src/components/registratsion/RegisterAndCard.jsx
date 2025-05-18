@@ -55,12 +55,14 @@ const RegisterAndCard = () => {
       cPassword: cPasswordRef.current.value,
       gender: form.gender,
     };
+
     if (edit) {
       setData(data.map((item) => (item.id === edit ? newUser : item)));
       setEdit(null);
     } else {
       setData([...data, newUser]);
     }
+
     setForm({
       name: "",
       email: "",
@@ -70,7 +72,14 @@ const RegisterAndCard = () => {
     surnameRef.current.value = "";
     phoneRef.current.value = "";
     cPasswordRef.current.value = "";
-    return toast.success("Card Qo'shildi!")
+
+    setIsOpen(false);
+
+    {
+      edit
+        ? toast.success("Ma'lumot Yangilandi!")
+        : toast.success("Card Qo'shildi!");
+    }
   };
 
   const closeOpen = () => {
@@ -82,10 +91,10 @@ const RegisterAndCard = () => {
     setEdit(null);
   };
   const handleDelete = (id) => {
-    if(confirm("Are You Sure?")){
+    if (confirm("Are You Sure?")) {
       setData(data.filter((user) => user.id !== id));
     }
-    return toast.success("Card O'chirildi")
+    return toast.success("Card O'chirildi");
   };
 
   const handleEdit = (user) => {
@@ -100,7 +109,6 @@ const RegisterAndCard = () => {
       (cPasswordRef.current.value = user.cPassword),
       setEdit(user.id);
     setIsOpen(true);
-    return toast.success("Ma'lumot Yangilandi!")
   };
 
   return (
@@ -120,7 +128,7 @@ const RegisterAndCard = () => {
         }`}
       >
         <h1 className="mx-auto relative text-[30px] w-[200px] text-black font-semibold tracking-[1px] text-center mt-2 hover:text-gray-700  cursor-pointer duration-300 before:absolute before:left-0 before:bottom-0 before:w-[100%] before:h-[3px] before:scale-0 before:bg-gray-700 hover:before:scale-100 before:duration-300">
-          Registration
+        {edit !== null ? "Edit User" : "Register User"}
         </h1>
 
         <form
@@ -240,7 +248,10 @@ const RegisterAndCard = () => {
         </h1>
         <div className="flex gap-6 flex-wrap justify-center">
           {data?.map((user) => (
-            <div key={user.id} className="w-[320px] shadow-[1px_1px_8px_#333333] bg-gray-100 p-4 flex justify-center flex-col items-center gap-2 rounded-2xl">
+            <div
+              key={user.id}
+              className="w-[320px] shadow-[1px_1px_8px_#333333] bg-gray-100 p-4 flex justify-center flex-col items-center gap-2 rounded-2xl"
+            >
               <div className="w-[300px] h-[280px] rounded-2xl overflow-hidden">
                 <img
                   src={user.gender === "male" ? "./men.jpg" : "./women.jpg"}
@@ -290,8 +301,18 @@ const RegisterAndCard = () => {
                 <FaTwitter className="text-blue-500 cursor-pointer hover:scale-105 duration-300" />
               </div>
               <div className="flex  items-center gap-3 mt-2">
-                <button onClick={() => handleEdit(user)} className="w-[120px] h-[35px] bg-green-600 hover:bg-green-800 cursor-pointer text-white font-medium rounded-[5px] duration-300">Update</button>
-                <button onClick={() => handleDelete(user.id)} className="w-[120px] h-[35px] bg-red-600 hover:bg-red-800 cursor-pointer text-white font-medium rounded-[5px] duration-300">Delete</button>
+                <button
+                  onClick={() => handleEdit(user)}
+                  className="w-[120px] h-[35px] bg-green-600 hover:bg-green-800 cursor-pointer text-white font-medium rounded-[5px] duration-300"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => handleDelete(user.id)}
+                  className="w-[120px] h-[35px] bg-red-600 hover:bg-red-800 cursor-pointer text-white font-medium rounded-[5px] duration-300"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
